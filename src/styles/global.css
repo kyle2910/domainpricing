@@ -90,4 +90,14 @@ code, .mono {
   body {
     font-size: 14px;
   }
+
+  .wrap {
+    padding: 0 14px;
+  }
+}
+
+@media (max-width: 380px) {
+  .wrap {
+    padding: 0 10px;
+  }
 }

@@ -326,9 +326,54 @@ const { rows } = Astro.props;
     .table-controls {
       flex-direction: column;
       align-items: stretch;
+      padding: 10px 12px;
+      gap: 8px;
     }
     .search-box {
       max-width: none;
+    }
+
+    thead th {
+      padding: 8px 8px;
+      font-size: 0.68rem;
+      letter-spacing: 0.02em;
+    }
+
+    td {
+      padding: 7px 8px;
+      font-size: 0.82rem;
+    }
+
+    thead th:first-child,
+    td:first-child {
+      padding-left: 12px;
+    }
+
+    thead th:last-child,
+    td:last-child {
+      padding-right: 12px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    thead th {
+      padding: 7px 6px;
+      font-size: 0.64rem;
+    }
+
+    td {
+      padding: 6px 6px;
+      font-size: 0.78rem;
+    }
+
+    thead th:first-child,
+    td:first-child {
+      padding-left: 10px;
+    }
+
+    thead th:last-child,
+    td:last-child {
+      padding-right: 10px;
     }
   }
 </style>

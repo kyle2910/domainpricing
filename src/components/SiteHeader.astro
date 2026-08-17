@@ -241,4 +241,26 @@ const { current, allRegistrars } = Astro.props;
     color: var(--accent);
     border-color: var(--accent);
   }
+
+  @media (max-width: 500px) {
+    .header-inner {
+      padding-top: 14px;
+      padding-bottom: 12px;
+      gap: 10px;
+    }
+
+    .brand-text {
+      font-size: 1.1rem;
+    }
+
+    .nav-scroll {
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+
+    .nav-pill {
+      font-size: 0.72rem;
+      padding: 4px 8px;
+    }
+  }
 </style>
