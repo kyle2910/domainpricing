@@ -67,7 +67,7 @@ const { current, allRegistrars } = Astro.props;
     <div class="max-w-5xl mx-auto px-4 sm:px-6 py-2 flex gap-2 overflow-x-auto">
       <a
         href="/"
-        class={`btn btn-xs sm:btn-sm rounded-full font-mono ${current.id === "average" ? "btn-primary" : "btn-ghost"}`}
+        class={`btn btn-xs sm:btn-sm font-mono ${current.id === "average" ? "btn-primary" : "btn-ghost"}`}
       >
         Average
       </a>
@@ -77,7 +77,7 @@ const { current, allRegistrars } = Astro.props;
           .map((r) => (
             <a
               href={`/${r.slug}`}
-              class={`btn btn-xs sm:btn-sm rounded-full font-mono whitespace-nowrap ${r.slug === current.slug ? "btn-primary" : "btn-ghost"}`}
+              class={`btn btn-xs sm:btn-sm font-mono whitespace-nowrap ${r.slug === current.slug ? "btn-primary" : "btn-ghost"}`}
             >
               {r.name}
             </a>
