@@ -2,40 +2,18 @@
 const year = new Date().getFullYear();
 ---
 
-<footer class="site-footer">
-  <div class="wrap footer-inner">
-    <p>
+<footer class="border-t border-base-300 mt-8">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col gap-1">
+    <p class="text-xs text-base-content/50">
       Data has been compiled from the internet and may not always reflect
       live registrar pricing.
     </p>
-    <p>
+    <p class="text-xs text-base-content/50">
       Contact:
-      <a href="mailto:nguyenhuuhoa@proton.me">nguyenhuuhoa@proton.me</a>
+      <a href="mailto:nguyenhuuhoa@proton.me" class="link link-hover text-base-content/70">
+        nguyenhuuhoa@proton.me
+      </a>
       · © {year} DomainPricing
     </p>
   </div>
 </footer>
-
-<style>
-  .site-footer {
-    border-top: 1px solid var(--border);
-    margin-top: 48px;
-  }
-
-  .footer-inner {
-    padding: 24px 0 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .footer-inner p {
-    margin: 0;
-    font-size: 0.8rem;
-    color: var(--text-faint);
-  }
-
-  .footer-inner a {
-    color: var(--text-muted);
-  }
-</style>

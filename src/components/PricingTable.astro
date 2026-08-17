@@ -8,10 +8,10 @@ interface Props {
 const { rows } = Astro.props;
 ---
 
-<div class="table-panel">
-  <div class="table-controls">
-    <div class="search-box">
-      <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<div class="card bg-base-100 border border-base-300 shadow-sm">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 border-b border-base-300">
+    <label class="input input-bordered input-sm flex items-center gap-2 w-full sm:max-w-xs">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="11" cy="11" r="7" />
         <line x1="21" y1="21" x2="16.65" y2="16.65" />
       </svg>
@@ -21,23 +21,24 @@ const { rows } = Astro.props;
         placeholder="Search TLDs (e.g., com, io, ai)"
         autocomplete="off"
         spellcheck="false"
+        class="grow"
       />
-    </div>
-    <span id="row-count" class="row-count" aria-live="polite"></span>
+    </label>
+    <span id="row-count" class="text-xs font-mono text-base-content/50 whitespace-nowrap" aria-live="polite"></span>
   </div>
 
-  <div class="table-scroll">
-    <table id="pricing-table">
+  <div class="overflow-x-auto">
+    <table id="pricing-table" class="table table-zebra table-sm sm:table-md">
       <thead>
         <tr>
-          <th data-key="tld" data-dir="asc" tabindex="0" role="button">
-            TLD <span class="sort-arrow">↕</span>
+          <th data-key="tld" data-dir="asc" tabindex="0" role="button" class="cursor-pointer select-none hover:bg-base-200">
+            TLD <span class="sort-arrow opacity-50">↕</span>
           </th>
-          <th data-key="registration" data-dir="none" tabindex="0" role="button">
-            Registration <span class="sort-arrow">↕</span>
+          <th data-key="registration" data-dir="none" tabindex="0" role="button" class="cursor-pointer select-none hover:bg-base-200 text-right">
+            Registration <span class="sort-arrow opacity-50">↕</span>
           </th>
-          <th data-key="renewal" data-dir="none" tabindex="0" role="button">
-            Renewal <span class="sort-arrow">↕</span>
+          <th data-key="renewal" data-dir="none" tabindex="0" role="button" class="cursor-pointer select-none hover:bg-base-200 text-right">
+            Renewal <span class="sort-arrow opacity-50">↕</span>
           </th>
         </tr>
       </thead>
@@ -45,11 +46,11 @@ const { rows } = Astro.props;
         {
           rows.map((r) => (
             <tr data-tld={r.tld} data-registration={r.registration} data-renewal={r.renewal}>
-              <td class="tld-cell">.{r.tld}</td>
-              <td class="price-cell" data-field="registration">
+              <td class="font-mono">.{r.tld}</td>
+              <td class="font-mono text-right tabular-nums" data-field="registration">
                 {r.registration.toFixed(2)}
               </td>
-              <td class="price-cell" data-field="renewal">
+              <td class="font-mono text-right tabular-nums" data-field="renewal">
                 {r.renewal.toFixed(2)}
               </td>
             </tr>
@@ -57,7 +58,7 @@ const { rows } = Astro.props;
         }
       </tbody>
     </table>
-    <p id="no-results" class="no-results" hidden>No TLDs match your search.</p>
+    <p id="no-results" class="text-center py-8 text-sm text-base-content/50" hidden>No TLDs match your search.</p>
   </div>
 </div>
 
@@ -109,9 +110,13 @@ const { rows } = Astro.props;
       if (h.dataset.key === sortKey) {
         h.dataset.dir = sortDir;
         arrow.textContent = sortDir === "asc" ? "↑" : "↓";
+        arrow.classList.remove("opacity-50");
+        arrow.classList.add("text-primary");
       } else {
         h.dataset.dir = "none";
         arrow.textContent = "↕";
+        arrow.classList.add("opacity-50");
+        arrow.classList.remove("text-primary");
       }
     });
   }
@@ -185,195 +190,3 @@ const { rows } = Astro.props;
   applySearch();
   initCurrency();
 </script>
-
-<style>
-  .table-panel {
-    background: var(--bg-elevated);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-
-  .table-controls {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--border);
-    flex-wrap: wrap;
-  }
-
-  .search-box {
-    position: relative;
-    flex: 1;
-    min-width: 200px;
-    max-width: 340px;
-  }
-
-  .search-icon {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-faint);
-    pointer-events: none;
-  }
-
-  #tld-search {
-    width: 100%;
-    font-family: var(--font-body);
-    font-size: 0.88rem;
-    padding: 7px 10px 7px 32px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--text);
-  }
-
-  #tld-search::placeholder {
-    color: var(--text-faint);
-  }
-
-  .row-count {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--text-faint);
-    white-space: nowrap;
-  }
-
-  .table-scroll {
-    overflow-x: auto;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  thead th {
-    text-align: left;
-    padding: 10px 16px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-    user-select: none;
-    white-space: nowrap;
-  }
-
-  thead th:hover {
-    color: var(--text);
-    background: var(--bg-hover);
-  }
-
-  thead th:not(:first-child),
-  tbody td:not(:first-child) {
-    text-align: right;
-  }
-
-  .sort-arrow {
-    display: inline-block;
-    margin-left: 3px;
-    font-size: 0.75em;
-    color: var(--text-faint);
-  }
-
-  th[data-dir="asc"] .sort-arrow,
-  th[data-dir="desc"] .sort-arrow {
-    color: var(--accent);
-  }
-
-  tbody tr {
-    border-bottom: 1px solid var(--border);
-  }
-
-  tbody tr:last-child {
-    border-bottom: none;
-  }
-
-  tbody tr:hover {
-    background: var(--bg-hover);
-  }
-
-  td {
-    padding: 9px 16px;
-    font-size: 0.88rem;
-  }
-
-  .tld-cell {
-    font-family: var(--font-mono);
-    color: var(--text);
-  }
-
-  .price-cell {
-    font-family: var(--font-mono);
-    color: var(--text-muted);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .no-results {
-    text-align: center;
-    padding: 32px 16px;
-    color: var(--text-faint);
-    font-size: 0.88rem;
-  }
-
-  @media (max-width: 500px) {
-    .table-controls {
-      flex-direction: column;
-      align-items: stretch;
-      padding: 10px 12px;
-      gap: 8px;
-    }
-    .search-box {
-      max-width: none;
-    }
-
-    thead th {
-      padding: 8px 8px;
-      font-size: 0.68rem;
-      letter-spacing: 0.02em;
-    }
-
-    td {
-      padding: 7px 8px;
-      font-size: 0.82rem;
-    }
-
-    thead th:first-child,
-    td:first-child {
-      padding-left: 12px;
-    }
-
-    thead th:last-child,
-    td:last-child {
-      padding-right: 12px;
-    }
-  }
-
-  @media (max-width: 360px) {
-    thead th {
-      padding: 7px 6px;
-      font-size: 0.64rem;
-    }
-
-    td {
-      padding: 6px 6px;
-      font-size: 0.78rem;
-    }
-
-    thead th:first-child,
-    td:first-child {
-      padding-left: 10px;
-    }
-
-    thead th:last-child,
-    td:last-child {
-      padding-right: 10px;
-    }
-  }
-</style>

@@ -1,7 +1,7 @@
 # DomainPricing
 
-Static site (Astro) hiển thị bảng giá tên miền theo registrar, build tự động
-từ các file CSV trong thư mục `csv/`.
+Static site (Astro + Tailwind CSS + daisyUI) hiển thị bảng giá tên miền theo
+registrar, build tự động từ các file CSV trong thư mục `csv/`.
 
 ## Cách dùng
 
@@ -52,8 +52,8 @@ từ các file CSV trong thư mục `csv/`.
 - **Đổi tiền tệ** qua [Frankfurter API](https://frankfurter.dev) — mặc định
   USD, người dùng chọn tiền tệ khác thì tự động fetch tỷ giá và quy đổi tại
   client, cache theo ngày trong `localStorage`.
-- **Dark/light tự động** theo `prefers-color-scheme` của hệ thống, không có
-  nút bật/tắt thủ công.
+- **Dark/light tự động** theo `prefers-color-scheme` của hệ thống, dùng 2
+  theme có sẵn của daisyUI (`light` / `dark`), không có nút bật/tắt thủ công.
 - **CSV database công khai** tại `/database/<tên-file>.csv` cho mỗi registrar
   (endpoint tĩnh, build từ chính file CSV gốc).
 - **SEO cho Google/Bing**: mỗi trang có title, meta description, meta
@@ -71,16 +71,34 @@ csv/                       ← đặt file CSV của bạn vào đây
 src/
   lib/registrars.ts        ← đọc & parse toàn bộ CSV lúc build
   scripts/currency.ts       ← logic gọi Frankfurter API, cache, format số
+  styles/global.css         ← import Tailwind + cấu hình theme daisyUI
   components/
-    SiteHeader.astro        ← header + chọn currency + nav registrar
+    SiteHeader.astro        ← header (daisyUI navbar) + chọn currency + nav registrar
     SiteFooter.astro
-    PricingTable.astro      ← bảng giá: sort, search, render giá
+    PricingTable.astro      ← bảng giá (daisyUI table): sort, search, render giá
     RegistrarPage.astro     ← layout nội dung dùng chung cho mọi trang
   pages/
     index.astro             ← trang chủ (dùng average.csv)
     [registrar].astro       ← route động, 1 trang / 1 file CSV (trừ average)
     database/[file].csv.ts  ← serve raw CSV tại /database/*.csv
 ```
+
+## UI: Tailwind CSS + daisyUI
+
+Giao diện dùng [daisyUI](https://daisyui.com) với 2 theme mặc định `light`
+và `dark`. Theme được chọn tự động theo `prefers-color-scheme` của hệ điều
+hành thông qua cấu hình trong `src/styles/global.css`:
+
+```css
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+}
+```
+
+Không có toggle chuyển theme thủ công trong UI. Muốn đổi theme, đổi tên theme
+trong dòng trên (danh sách theme có sẵn: https://daisyui.com/docs/themes/)
+hoặc thêm theme tùy biến theo tài liệu daisyUI.
 
 ## Ghi chú kỹ thuật
 

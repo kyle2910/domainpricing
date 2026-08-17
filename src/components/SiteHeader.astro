@@ -9,25 +9,23 @@ interface Props {
 const { current, allRegistrars } = Astro.props;
 ---
 
-<header class="site-header">
-  <div class="wrap header-inner">
-    <a href="/" class="brand">
-      <span class="brand-mark">$</span>
-      <span class="brand-text">Domain<span class="brand-accent">Pricing</span></span>
-    </a>
+<header class="border-b border-base-300 bg-base-100">
+  <div class="navbar max-w-5xl mx-auto px-4 sm:px-6">
+    <div class="flex-1">
+      <a href="/" class="btn btn-ghost text-lg font-semibold px-2">
+        <span
+          class="flex items-center justify-center w-6 h-6 rounded-full border border-primary text-primary text-sm font-mono"
+          >$</span
+        >
+        Domain<span class="text-primary">Pricing</span>
+      </a>
+    </div>
 
-    <div class="header-controls">
-      <label class="currency-label" for="currency-select">
-        Currency
-        <span class="info-dot" tabindex="0" aria-label="Currency conversion note">
-          i
-          <span class="tooltip" role="tooltip">
-            Source data is denominated in USD and converted live using the
-            Frankfurter exchange rate API.
-          </span>
-        </span>
-      </label>
-      <select id="currency-select" class="currency-select">
+    <div class="flex-none flex items-center gap-2">
+      <div class="tooltip tooltip-bottom" data-tip="Source data is in USD, converted live via the Frankfurter exchange rate API.">
+        <span class="hidden sm:inline text-xs uppercase tracking-wide text-base-content/60 mr-1">Currency</span>
+      </div>
+      <select id="currency-select" class="select select-bordered select-sm font-mono w-28">
         <option value="USD">USD</option>
       </select>
     </div>
@@ -65,11 +63,11 @@ const { current, allRegistrars } = Astro.props;
     init();
   </script>
 
-  <nav class="registrar-nav" aria-label="Registrars">
-    <div class="wrap nav-scroll">
+  <nav aria-label="Registrars" class="border-t border-base-200 bg-base-200/40">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-2 flex gap-2 overflow-x-auto">
       <a
         href="/"
-        class:list={["nav-pill", { active: current.id === "average" }]}
+        class={`btn btn-xs sm:btn-sm rounded-full font-mono ${current.id === "average" ? "btn-primary" : "btn-ghost"}`}
       >
         Average
       </a>
@@ -79,7 +77,7 @@ const { current, allRegistrars } = Astro.props;
           .map((r) => (
             <a
               href={`/${r.slug}`}
-              class:list={["nav-pill", { active: r.slug === current.slug }]}
+              class={`btn btn-xs sm:btn-sm rounded-full font-mono whitespace-nowrap ${r.slug === current.slug ? "btn-primary" : "btn-ghost"}`}
             >
               {r.name}
             </a>
@@ -88,179 +86,3 @@ const { current, allRegistrars } = Astro.props;
     </div>
   </nav>
 </header>
-
-<style>
-  .site-header {
-    border-bottom: 1px solid var(--border);
-    background: var(--bg-elevated);
-  }
-
-  .header-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 20px;
-    padding-bottom: 16px;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .brand {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    color: var(--text);
-  }
-
-  .brand:hover {
-    text-decoration: none;
-  }
-
-  .brand-mark {
-    font-family: var(--font-mono);
-    color: var(--accent);
-    font-size: 1.1rem;
-    border: 1.5px solid var(--accent);
-    width: 24px;
-    height: 24px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-  }
-
-  .brand-text {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 1.25rem;
-    letter-spacing: -0.01em;
-  }
-
-  .brand-accent {
-    color: var(--accent);
-  }
-
-  .header-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .currency-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .info-dot {
-    position: relative;
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    border: 1px solid var(--text-faint);
-    color: var(--text-faint);
-    font-size: 10px;
-    font-style: italic;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: help;
-    font-family: var(--font-display);
-  }
-
-  .tooltip {
-    display: none;
-    position: absolute;
-    top: 130%;
-    right: -8px;
-    width: 220px;
-    background: var(--text);
-    color: var(--bg);
-    padding: 8px 10px;
-    border-radius: var(--radius);
-    font-size: 0.72rem;
-    line-height: 1.4;
-    text-transform: none;
-    letter-spacing: normal;
-    z-index: 20;
-    font-family: var(--font-body);
-  }
-
-  .info-dot:hover .tooltip,
-  .info-dot:focus-visible .tooltip {
-    display: block;
-  }
-
-  .currency-select {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    background: var(--bg);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 6px 10px;
-    cursor: pointer;
-  }
-
-  .registrar-nav {
-    background: var(--bg);
-  }
-
-  .nav-scroll {
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    scrollbar-width: thin;
-  }
-
-  .nav-pill {
-    flex-shrink: 0;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    padding: 5px 10px;
-    border-radius: var(--radius);
-    color: var(--text-muted);
-    border: 1px solid transparent;
-    white-space: nowrap;
-  }
-
-  .nav-pill:hover {
-    background: var(--bg-hover);
-    text-decoration: none;
-    color: var(--text);
-  }
-
-  .nav-pill.active {
-    background: var(--accent-soft);
-    color: var(--accent);
-    border-color: var(--accent);
-  }
-
-  @media (max-width: 500px) {
-    .header-inner {
-      padding-top: 14px;
-      padding-bottom: 12px;
-      gap: 10px;
-    }
-
-    .brand-text {
-      font-size: 1.1rem;
-    }
-
-    .nav-scroll {
-      padding-top: 8px;
-      padding-bottom: 8px;
-    }
-
-    .nav-pill {
-      font-size: 0.72rem;
-      padding: 4px 8px;
-    }
-  }
-</style>
