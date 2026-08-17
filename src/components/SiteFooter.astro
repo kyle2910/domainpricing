@@ -1,0 +1,41 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p>
+      Data has been compiled from the internet and may not always reflect
+      live registrar pricing.
+    </p>
+    <p>
+      Contact:
+      <a href="mailto:nguyenhuuhoa@proton.me">nguyenhuuhoa@proton.me</a>
+      · © {year} DomainPricing
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+
+  .footer-inner {
+    padding: 24px 0 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .footer-inner p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--text-faint);
+  }
+
+  .footer-inner a {
+    color: var(--text-muted);
+  }
+</style>

@@ -1,0 +1,47 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import RegistrarPage from "../components/RegistrarPage.astro";
+import { getAllRegistrars, getRegistrarPages } from "../lib/registrars";
+
+export function getStaticPaths() {
+  const registrars = getRegistrarPages();
+  return registrars.map((r) => ({
+    params: { registrar: r.slug },
+    props: { registrarId: r.id },
+  }));
+}
+
+const { registrarId } = Astro.props;
+const allRegistrars = getAllRegistrars();
+const current = allRegistrars.find((r) => r.id === registrarId)!;
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  name: `${current.name} Domain Pricing`,
+  description: `Current ${current.name} domain registration and renewal prices by TLD.`,
+  keywords: [
+    "Domain Pricing",
+    `${current.name} Domain Pricing`,
+    "Domain Pricing Comparison",
+    "Domain Pricing API",
+  ],
+  variableMeasured: ["TLD registration price", "TLD renewal price"],
+};
+---
+
+<BaseLayout
+  title={`${current.name} Domain Pricing — Registration & Renewal Costs`}
+  description={`Current ${current.name} domain registration and renewal prices by TLD, compared and updated regularly. Free CSV database and API for developers.`}
+  keywords={[
+    "Domain Pricing",
+    `${current.name} Domain Pricing`,
+    "Domain Pricing API",
+    "Domain Pricing Comparison",
+    `${current.name} domain prices`,
+    `${current.name} TLD pricing`,
+  ]}
+  structuredData={structuredData}
+>
+  <RegistrarPage current={current} allRegistrars={allRegistrars} isAverage={false} />
+</BaseLayout>

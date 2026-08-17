@@ -1,0 +1,150 @@
+---
+import type { Registrar } from "../lib/registrars";
+import SiteHeader from "./SiteHeader.astro";
+import SiteFooter from "./SiteFooter.astro";
+import PricingTable from "./PricingTable.astro";
+
+interface Props {
+  current: Registrar;
+  allRegistrars: Registrar[];
+  isAverage: boolean;
+}
+
+const { current, allRegistrars, isAverage } = Astro.props;
+
+const displayName = isAverage ? "Average" : current.name;
+const csvHref = `/database/${current.id}.csv`;
+const otherRegistrars = allRegistrars.filter((r) => r.id !== "average");
+---
+
+<SiteHeader current={current} allRegistrars={allRegistrars} />
+
+<main class="wrap page-main">
+  <section class="intro">
+    <h1>
+      {isAverage ? (
+        <><span class="accent-word">Average</span> Domain Pricing</>
+      ) : (
+        <><span class="accent-word">{displayName}</span> Domain Pricing</>
+      )}
+    </h1>
+    <p class="lede">
+      {isAverage ? (
+        <>This page lists current average domain prices. Data is refreshed regularly.</>
+      ) : (
+        <>This page lists current {displayName} domain prices. Data is refreshed regularly.</>
+      )}
+    </p>
+
+    <div class="meta-block">
+      <span class="meta-label">CSV database for developers</span>
+      <a href={csvHref} class="mono meta-link">https://domainpricing.net{csvHref}</a>
+    </div>
+
+    {
+      (() => {
+        const links = [
+          { name: "Average Domain Pricing", href: "/", id: "average" },
+          ...otherRegistrars.map((r) => ({
+            name: `${r.name} Registrar`,
+            href: `/${r.slug}`,
+            id: r.id,
+          })),
+        ].filter((l) => l.id !== current.id);
+
+        return (
+          <div class="meta-block">
+            <span class="meta-label">There is also detailed information on</span>
+            <p class="registrar-links">
+              {links.map((l, i) => (
+                <>
+                  <a href={l.href}>{l.name}</a>
+                  {i < links.length - 2 ? ", " : i === links.length - 2 ? " and " : ""}
+                </>
+              ))}
+            </p>
+          </div>
+        );
+      })()
+    }
+  </section>
+
+  <PricingTable rows={current.rows} />
+</main>
+
+<SiteFooter />
+
+<style>
+  .page-main {
+    padding-top: 40px;
+    padding-bottom: 24px;
+  }
+
+  .intro {
+    margin-bottom: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: 2.1rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0;
+    line-height: 1.15;
+  }
+
+  .accent-word {
+    color: var(--accent);
+  }
+
+  .lede {
+    color: var(--text-muted);
+    font-size: 0.98rem;
+    max-width: 60ch;
+    margin: -6px 0 0;
+  }
+
+  .meta-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .meta-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-faint);
+  }
+
+  .meta-link {
+    font-size: 0.82rem;
+    background: var(--bg-hover);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 4px 8px;
+    display: inline-block;
+    width: fit-content;
+  }
+
+  .registrar-links {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    max-width: 70ch;
+    line-height: 1.6;
+  }
+
+  .registrar-links a {
+    color: var(--link);
+  }
+
+  @media (max-width: 500px) {
+    h1 {
+      font-size: 1.6rem;
+    }
+  }
+</style>

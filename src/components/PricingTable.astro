@@ -1,0 +1,334 @@
+---
+import type { TldRow } from "../lib/registrars";
+
+interface Props {
+  rows: TldRow[];
+}
+
+const { rows } = Astro.props;
+---
+
+<div class="table-panel">
+  <div class="table-controls">
+    <div class="search-box">
+      <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="7" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      </svg>
+      <input
+        id="tld-search"
+        type="text"
+        placeholder="Search TLDs (e.g., com, io, ai)"
+        autocomplete="off"
+        spellcheck="false"
+      />
+    </div>
+    <span id="row-count" class="row-count" aria-live="polite"></span>
+  </div>
+
+  <div class="table-scroll">
+    <table id="pricing-table">
+      <thead>
+        <tr>
+          <th data-key="tld" data-dir="asc" tabindex="0" role="button">
+            TLD <span class="sort-arrow">↕</span>
+          </th>
+          <th data-key="registration" data-dir="none" tabindex="0" role="button">
+            Registration <span class="sort-arrow">↕</span>
+          </th>
+          <th data-key="renewal" data-dir="none" tabindex="0" role="button">
+            Renewal <span class="sort-arrow">↕</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody id="pricing-tbody">
+        {
+          rows.map((r) => (
+            <tr data-tld={r.tld} data-registration={r.registration} data-renewal={r.renewal}>
+              <td class="tld-cell">.{r.tld}</td>
+              <td class="price-cell" data-field="registration">
+                {r.registration.toFixed(2)}
+              </td>
+              <td class="price-cell" data-field="renewal">
+                {r.renewal.toFixed(2)}
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+    <p id="no-results" class="no-results" hidden>No TLDs match your search.</p>
+  </div>
+</div>
+
+<script>
+  import { getRates, getSavedCurrency, formatAmount, type RatesPayload } from "../scripts/currency";
+
+  const table = document.getElementById("pricing-table") as HTMLTableElement;
+  const tbody = document.getElementById("pricing-tbody") as HTMLTableSectionElement;
+  const searchInput = document.getElementById("tld-search") as HTMLInputElement;
+  const rowCountEl = document.getElementById("row-count") as HTMLElement;
+  const noResultsEl = document.getElementById("no-results") as HTMLElement;
+  const headers = Array.from(table.querySelectorAll("th[data-key]")) as HTMLTableCellElement[];
+
+  let currentRates: RatesPayload | null = null;
+  let currentCurrency = getSavedCurrency();
+
+  type SortKey = "tld" | "registration" | "renewal";
+  type SortDir = "asc" | "desc";
+  let sortKey: SortKey = "tld";
+  let sortDir: SortDir = "asc";
+
+  function getRows(): HTMLTableRowElement[] {
+    return Array.from(tbody.querySelectorAll("tr"));
+  }
+
+  function applySort() {
+    const rows = getRows();
+    rows.sort((a, b) => {
+      let av: string | number;
+      let bv: string | number;
+
+      if (sortKey === "tld") {
+        av = a.dataset.tld ?? "";
+        bv = b.dataset.tld ?? "";
+        const cmp = (av as string).localeCompare(bv as string);
+        return sortDir === "asc" ? cmp : -cmp;
+      }
+
+      av = parseFloat(a.dataset[sortKey] ?? "0");
+      bv = parseFloat(b.dataset[sortKey] ?? "0");
+      const cmp = av - bv;
+      return sortDir === "asc" ? cmp : -cmp;
+    });
+
+    rows.forEach((r) => tbody.appendChild(r));
+
+    headers.forEach((h) => {
+      const arrow = h.querySelector(".sort-arrow") as HTMLElement;
+      if (h.dataset.key === sortKey) {
+        h.dataset.dir = sortDir;
+        arrow.textContent = sortDir === "asc" ? "↑" : "↓";
+      } else {
+        h.dataset.dir = "none";
+        arrow.textContent = "↕";
+      }
+    });
+  }
+
+  headers.forEach((h) => {
+    const activate = () => {
+      const key = h.dataset.key as SortKey;
+      if (sortKey === key) {
+        sortDir = sortDir === "asc" ? "desc" : "asc";
+      } else {
+        sortKey = key;
+        sortDir = "asc";
+      }
+      applySort();
+    };
+    h.addEventListener("click", activate);
+    h.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        activate();
+      }
+    });
+  });
+
+  function applySearch() {
+    const q = searchInput.value.trim().toLowerCase();
+    let visibleCount = 0;
+
+    getRows().forEach((row) => {
+      const tld = row.dataset.tld ?? "";
+      const match = tld.includes(q);
+      row.hidden = !match;
+      if (match) visibleCount++;
+    });
+
+    noResultsEl.hidden = visibleCount !== 0;
+    rowCountEl.textContent = q
+      ? `${visibleCount} of ${getRows().length} TLDs`
+      : `${getRows().length} TLDs`;
+  }
+
+  searchInput.addEventListener("input", applySearch);
+
+  function renderPrices() {
+    getRows().forEach((row) => {
+      const reg = parseFloat(row.dataset.registration ?? "0");
+      const ren = parseFloat(row.dataset.renewal ?? "0");
+
+      const regCell = row.querySelector('[data-field="registration"]') as HTMLElement;
+      const renCell = row.querySelector('[data-field="renewal"]') as HTMLElement;
+
+      regCell.textContent = formatAmount(reg, currentCurrency, currentRates);
+      renCell.textContent = formatAmount(ren, currentCurrency, currentRates);
+    });
+  }
+
+  async function initCurrency() {
+    if (currentCurrency !== "USD") {
+      currentRates = await getRates();
+    }
+    renderPrices();
+  }
+
+  window.addEventListener("dp:currency-change", ((e: CustomEvent) => {
+    currentCurrency = e.detail.currency;
+    currentRates = e.detail.rates;
+    renderPrices();
+  }) as EventListener);
+
+  applySort();
+  applySearch();
+  initCurrency();
+</script>
+
+<style>
+  .table-panel {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .table-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .search-box {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+    max-width: 340px;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-faint);
+    pointer-events: none;
+  }
+
+  #tld-search {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    padding: 7px 10px 7px 32px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+  }
+
+  #tld-search::placeholder {
+    color: var(--text-faint);
+  }
+
+  .row-count {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-faint);
+    white-space: nowrap;
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    text-align: left;
+    padding: 10px 16px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  thead th:hover {
+    color: var(--text);
+    background: var(--bg-hover);
+  }
+
+  thead th:not(:first-child),
+  tbody td:not(:first-child) {
+    text-align: right;
+  }
+
+  .sort-arrow {
+    display: inline-block;
+    margin-left: 3px;
+    font-size: 0.75em;
+    color: var(--text-faint);
+  }
+
+  th[data-dir="asc"] .sort-arrow,
+  th[data-dir="desc"] .sort-arrow {
+    color: var(--accent);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  tbody tr:hover {
+    background: var(--bg-hover);
+  }
+
+  td {
+    padding: 9px 16px;
+    font-size: 0.88rem;
+  }
+
+  .tld-cell {
+    font-family: var(--font-mono);
+    color: var(--text);
+  }
+
+  .price-cell {
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--text-faint);
+    font-size: 0.88rem;
+  }
+
+  @media (max-width: 500px) {
+    .table-controls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .search-box {
+      max-width: none;
+    }
+  }
+</style>

@@ -1,0 +1,42 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import RegistrarPage from "../components/RegistrarPage.astro";
+import { getAllRegistrars, getAverageRegistrar } from "../lib/registrars";
+
+const allRegistrars = getAllRegistrars();
+const average = getAverageRegistrar();
+
+if (!average) {
+  throw new Error(
+    "No average.csv found in /csv — the homepage needs csv/average.csv to build."
+  );
+}
+
+const registrarNames = allRegistrars
+  .filter((r) => r.id !== "average")
+  .map((r) => r.name);
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  name: "Average Domain Pricing",
+  description:
+    "Average domain registration and renewal prices across tracked registrars.",
+  keywords: ["Domain Pricing", "Domain Pricing Comparison", "Domain Pricing API"],
+  variableMeasured: ["TLD registration price", "TLD renewal price"],
+};
+---
+
+<BaseLayout
+  title="Domain Pricing — Compare Average Registrar Prices"
+  description="Compare average domain registration and renewal prices across all tracked registrars. Free CSV database and API for developers."
+  keywords={[
+    "Domain Pricing",
+    "Domain Pricing API",
+    "Domain Pricing Comparison",
+    ...registrarNames.map((name) => `${name} Domain Pricing`),
+  ]}
+  structuredData={structuredData}
+>
+  <RegistrarPage current={average} allRegistrars={allRegistrars} isAverage={true} />
+</BaseLayout>
