@@ -93,16 +93,42 @@ export function saveCurrency(code: string) {
 }
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
-  USD: "$",
+  AUD: "A$",
+  BGN: "лв",
+  BRL: "R$",
+  CAD: "C$",
+  CHF: "CHF",
+  CNY: "¥",
+  CZK: "Kč",
+  DKK: "kr",
   EUR: "€",
   GBP: "£",
-  JPY: "¥",
-  CNY: "¥",
+  HKD: "HK$",
+  HUF: "Ft",
+  IDR: "Rp",
+  ILS: "₪",
   INR: "₹",
+  ISK: "kr",
+  JPY: "¥",
   KRW: "₩",
+  MXN: "MX$",
+  MYR: "RM",
+  NOK: "kr",
+  NZD: "NZ$",
+  PHP: "₱",
+  PLN: "zł",
+  RON: "lei",
+  SEK: "kr",
+  SGD: "S$",
+  THB: "฿",
+  TRY: "₺",
+  USD: "$",
   VND: "₫",
-  BRL: "R$",
+  ZAR: "R",
 };
+
+/** Currencies conventionally shown without decimal places. */
+const ZERO_DECIMAL_CURRENCIES = new Set(["JPY", "KRW", "HUF", "ISK", "IDR", "VND"]);
 
 /** Converts a USD amount into the target currency and formats it for display. */
 export function formatAmount(usdAmount: number, currency: string, rates: RatesPayload | null): string {
@@ -112,8 +138,7 @@ export function formatAmount(usdAmount: number, currency: string, rates: RatesPa
   }
 
   const symbol = CURRENCY_SYMBOLS[currency] ?? "";
-  // Zero-decimal currencies (e.g. JPY, KRW) look wrong with .00
-  const zeroDecimal = ["JPY", "KRW", "VND"].includes(currency);
+  const zeroDecimal = ZERO_DECIMAL_CURRENCIES.has(currency);
   const formatted = zeroDecimal ? Math.round(amount).toString() : amount.toFixed(2);
 
   return symbol ? `${symbol}${formatted}` : `${formatted} ${currency}`;
