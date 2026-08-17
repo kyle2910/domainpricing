@@ -14,7 +14,6 @@ const { current, allRegistrars, isAverage } = Astro.props;
 
 const displayName = isAverage ? "Average" : current.name;
 const csvHref = `/database/${current.id}.csv`;
-const otherRegistrars = allRegistrars.filter((r) => r.id !== "average");
 ---
 
 <SiteHeader current={current} allRegistrars={allRegistrars} />
@@ -40,33 +39,6 @@ const otherRegistrars = allRegistrars.filter((r) => r.id !== "average");
       <span class="meta-label">CSV database for developers</span>
       <a href={csvHref} class="mono meta-link">https://domainpricing.net{csvHref}</a>
     </div>
-
-    {
-      (() => {
-        const links = [
-          { name: "Average Domain Pricing", href: "/", id: "average" },
-          ...otherRegistrars.map((r) => ({
-            name: `${r.name} Registrar`,
-            href: `/${r.slug}`,
-            id: r.id,
-          })),
-        ].filter((l) => l.id !== current.id);
-
-        return (
-          <div class="meta-block">
-            <span class="meta-label">There is also detailed information on</span>
-            <p class="registrar-links">
-              {links.map((l, i) => (
-                <>
-                  <a href={l.href}>{l.name}</a>
-                  {i < links.length - 2 ? ", " : i === links.length - 2 ? " and " : ""}
-                </>
-              ))}
-            </p>
-          </div>
-        );
-      })()
-    }
   </section>
 
   <PricingTable rows={current.rows} />
@@ -128,18 +100,6 @@ const otherRegistrars = allRegistrars.filter((r) => r.id !== "average");
     padding: 4px 8px;
     display: inline-block;
     width: fit-content;
-  }
-
-  .registrar-links {
-    margin: 0;
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    max-width: 70ch;
-    line-height: 1.6;
-  }
-
-  .registrar-links a {
-    color: var(--link);
   }
 
   @media (max-width: 500px) {
