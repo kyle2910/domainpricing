@@ -62,7 +62,7 @@ registrar, build tự động từ các file CSV trong thư mục `csv/`.
   Graph + Twitter card, JSON-LD (`schema.org/Dataset`), `robots.txt`, và
   `sitemap.xml` tự sinh từ danh sách CSV hiện có. **Nhớ đổi `site:` trong
   `astro.config.mjs` thành domain thật của bạn** trước khi deploy, nếu không
-  canonical URL và sitemap sẽ vẫn trỏ về `domainpricing.net`.
+  canonical URL và sitemap sẽ vẫn trỏ về `domainpricing.uk`.
 
 ## Cấu trúc project
 

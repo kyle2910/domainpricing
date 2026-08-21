@@ -2,7 +2,7 @@ import type { APIRoute } from "astro";
 import { getAllRegistrars } from "../lib/registrars";
 
 export const GET: APIRoute = ({ site }) => {
-  const base = site?.toString().replace(/\/$/, "") ?? "https://domainpricing.net";
+  const base = site?.toString().replace(/\/$/, "") ?? "https://domainpricing.uk";
   const registrars = getAllRegistrars();
   const today = new Date().toISOString().slice(0, 10);
 
