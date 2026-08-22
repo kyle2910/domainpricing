@@ -1,0 +1,783 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Free WHOIS Lookup — Check Domain Registration Info | DomainPricing</title>
+<meta name="description" content="Free WHOIS lookup tool. Check domain registration date, expiration date, registrar, and nameservers for any domain name — fast, accurate, no ads." />
+<meta name="keywords" content="whois, whois lookup, domain lookup, domain availability, domain registration, check domain, nameservers, registrar lookup" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://domainpricing.uk/whois" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="DomainPricing" />
+<meta property="og:title" content="Free WHOIS Lookup — Check Domain Registration Info" />
+<meta property="og:description" content="Look up registration date, expiration date, registrar, and nameservers for any domain name, free and instant." />
+<meta property="og:url" content="https://domainpricing.uk/whois" />
+<meta property="og:image" content="https://domainpricing.uk/og-image.png" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Free WHOIS Lookup — Check Domain Registration Info" />
+<meta name="twitter:description" content="Look up registration date, expiration date, registrar, and nameservers for any domain name, free and instant." />
+<meta name="twitter:image" content="https://domainpricing.uk/og-image.png" />
+
+<!-- JSON-LD structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "WHOIS Lookup",
+  "url": "https://domainpricing.uk/whois",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "description": "Free WHOIS lookup tool to check domain registration date, expiration date, registrar, and nameservers.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "DomainPricing",
+    "url": "https://domainpricing.uk"
+  }
+}
+</script>
+
+<style>
+  /* ---------- Design tokens (mirrors src/styles/global.css) ---------- */
+  :root {
+    color-scheme: light;
+    --color-base-100: oklch(100% 0 0);
+    --color-base-200: oklch(97.8% 0 0);
+    --color-base-300: oklch(94% 0 0);
+    --color-base-content: oklch(15% 0 0);
+
+    --color-primary: oklch(58% 0.2 255);
+    --color-primary-content: oklch(98% 0 0);
+
+    --color-success: oklch(64% 0.15 150);
+    --color-success-content: oklch(98% 0 0);
+    --color-warning: oklch(75% 0.15 80);
+    --color-warning-content: oklch(20% 0 0);
+    --color-error: oklch(58% 0.22 25);
+    --color-error-content: oklch(98% 0 0);
+
+    --radius-selector: 0.375rem;
+    --radius-field: 0.375rem;
+    --radius-box: 0.5rem;
+    --border: 1px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --color-base-100: oklch(15% 0 0);
+      --color-base-200: oklch(18% 0 0);
+      --color-base-300: oklch(23% 0 0);
+      --color-base-content: oklch(94% 0 0);
+
+      --color-primary: oklch(72% 0.17 45);
+      --color-primary-content: oklch(15% 0 0);
+
+      --color-success: oklch(70% 0.15 150);
+      --color-success-content: oklch(15% 0 0);
+      --color-warning: oklch(80% 0.15 80);
+      --color-warning-content: oklch(15% 0 0);
+      --color-error: oklch(68% 0.2 25);
+      --color-error-content: oklch(15% 0 0);
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--color-base-100);
+    color: var(--color-base-content);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .font-mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+
+  a { color: inherit; }
+
+  /* ---------- Header (mirrors SiteHeader.astro) ---------- */
+  header.site-header {
+    border-bottom: var(--border) solid var(--color-base-300);
+  }
+  .header-inner {
+    max-width: 64rem; /* max-w-5xl */
+    margin: 0 auto;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .brand {
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+  .brand span { color: var(--color-primary); }
+  .home-link {
+    font-size: 0.8rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    text-decoration: none;
+    padding: 0.35rem 0.7rem;
+    border-radius: var(--radius-field);
+    background: transparent;
+    border: var(--border) solid transparent;
+    transition: background-color 0.15s ease;
+  }
+  .home-link:hover { background: var(--color-base-200); }
+
+  /* ---------- Layout ---------- */
+  main {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 2.5rem;
+  }
+  @media (min-width: 640px) {
+    main { padding: 2.5rem 1.5rem 3.5rem; }
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+  }
+  @media (min-width: 640px) {
+    h1 { font-size: 1.875rem; }
+  }
+  h1 span.accent { color: var(--color-primary); }
+
+  .lede {
+    color: color-mix(in oklch, var(--color-base-content) 70%, transparent);
+    max-width: 65ch;
+    margin: 0 0 1.75rem;
+  }
+
+  /* ---------- Search form ---------- */
+  .search-card {
+    background: var(--color-base-100);
+    border: var(--border) solid var(--color-base-300);
+    border-radius: var(--radius-box);
+    padding: 1rem;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    margin-bottom: 1.75rem;
+  }
+
+  form.whois-form {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .input-wrap {
+    flex: 1 1 260px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: var(--border) solid var(--color-base-300);
+    border-radius: var(--radius-field);
+    padding: 0 0.65rem;
+    background: var(--color-base-100);
+    transition: border-color 0.15s ease;
+  }
+  .input-wrap:focus-within {
+    border-color: var(--color-primary);
+  }
+  .input-wrap svg {
+    flex: none;
+    opacity: 0.5;
+  }
+  .input-wrap input {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--color-base-content);
+    padding: 0.55rem 0;
+    font-size: 0.9rem;
+    width: 100%;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  .input-wrap input::placeholder {
+    color: color-mix(in oklch, var(--color-base-content) 40%, transparent);
+  }
+
+  button.btn-primary {
+    appearance: none;
+    border: none;
+    cursor: pointer;
+    background: var(--color-primary);
+    color: var(--color-primary-content);
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0 1.25rem;
+    border-radius: var(--radius-field);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: opacity 0.15s ease;
+  }
+  button.btn-primary:hover { opacity: 0.9; }
+  button.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .spinner {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid color-mix(in oklch, var(--color-primary-content) 40%, transparent);
+    border-top-color: var(--color-primary-content);
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  button.btn-primary.loading .spinner { display: inline-block; }
+  button.btn-primary.loading .btn-label { opacity: 0.85; }
+
+  .example-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+  }
+  .chip {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-field);
+    border: var(--border) solid var(--color-base-300);
+    background: var(--color-base-200);
+    cursor: pointer;
+    color: color-mix(in oklch, var(--color-base-content) 70%, transparent);
+    transition: background-color 0.15s ease;
+  }
+  .chip:hover { background: var(--color-base-300); }
+
+  /* ---------- Result states ---------- */
+  #result-area { min-height: 40px; }
+
+  .state-card {
+    border: var(--border) solid var(--color-base-300);
+    border-radius: var(--radius-box);
+    padding: 1rem 1.1rem;
+    display: flex;
+    gap: 0.65rem;
+    align-items: flex-start;
+    font-size: 0.9rem;
+  }
+  .state-card.error {
+    border-color: color-mix(in oklch, var(--color-error) 40%, var(--color-base-300));
+    background: color-mix(in oklch, var(--color-error) 8%, var(--color-base-100));
+  }
+  .state-card.available {
+    border-color: color-mix(in oklch, var(--color-success) 40%, var(--color-base-300));
+    background: color-mix(in oklch, var(--color-success) 8%, var(--color-base-100));
+  }
+  .state-card .icon { flex: none; margin-top: 0.1rem; }
+  .state-card.error .icon { color: var(--color-error); }
+  .state-card.available .icon { color: var(--color-success); }
+  .state-card strong { display: block; margin-bottom: 0.15rem; }
+
+  /* ---------- Result card ---------- */
+  .result-card {
+    background: var(--color-base-100);
+    border: var(--border) solid var(--color-base-300);
+    border-radius: var(--radius-box);
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    overflow: hidden;
+  }
+  .result-head {
+    padding: 1rem 1.1rem;
+    border-bottom: var(--border) solid var(--color-base-300);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .result-head .domain-name {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 1.15rem;
+    font-weight: 700;
+    word-break: break-all;
+  }
+  .badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--radius-selector);
+  }
+  .badge.registered {
+    background: color-mix(in oklch, var(--color-primary) 15%, var(--color-base-100));
+    color: var(--color-primary);
+  }
+
+  table.whois-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+  table.whois-table tr {
+    border-bottom: var(--border) solid var(--color-base-300);
+  }
+  table.whois-table tr:last-child { border-bottom: none; }
+  table.whois-table th, table.whois-table td {
+    padding: 0.65rem 1.1rem;
+    text-align: left;
+    vertical-align: top;
+  }
+  table.whois-table th {
+    width: 40%;
+    font-weight: 500;
+    color: color-mix(in oklch, var(--color-base-content) 55%, transparent);
+    white-space: nowrap;
+  }
+  table.whois-table td {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    word-break: break-word;
+  }
+  table.whois-table td.ns-list { line-height: 1.7; }
+
+  .section-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: color-mix(in oklch, var(--color-base-content) 50%, transparent);
+    padding: 0.9rem 1.1rem 0.3rem;
+    background: var(--color-base-200);
+  }
+
+  details.raw-json {
+    border-top: var(--border) solid var(--color-base-300);
+  }
+  details.raw-json summary {
+    cursor: pointer;
+    padding: 0.75rem 1.1rem;
+    font-size: 0.8rem;
+    color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+    user-select: none;
+  }
+  details.raw-json summary:hover { color: var(--color-base-content); }
+  details.raw-json pre {
+    margin: 0;
+    padding: 0 1.1rem 1rem;
+    font-size: 0.75rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 320px;
+    overflow-y: auto;
+    color: color-mix(in oklch, var(--color-base-content) 80%, transparent);
+  }
+
+  /* ---------- Skeleton loading ---------- */
+  .skeleton-card {
+    border: var(--border) solid var(--color-base-300);
+    border-radius: var(--radius-box);
+    padding: 1.1rem;
+  }
+  .skeleton-line {
+    height: 0.8rem;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--color-base-200) 25%, var(--color-base-300) 37%, var(--color-base-200) 63%);
+    background-size: 400% 100%;
+    animation: shimmer 1.4s ease infinite;
+    margin-bottom: 0.75rem;
+  }
+  @keyframes shimmer {
+    0% { background-position: 100% 50%; }
+    100% { background-position: 0 50%; }
+  }
+
+  /* ---------- FAQ ---------- */
+  .faq {
+    margin-top: 2.5rem;
+    border-top: var(--border) solid var(--color-base-300);
+    padding-top: 1.5rem;
+  }
+  .faq h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0 0 1rem;
+  }
+  .faq-item { margin-bottom: 1rem; }
+  .faq-item h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0 0 0.3rem;
+  }
+  .faq-item p {
+    font-size: 0.875rem;
+    color: color-mix(in oklch, var(--color-base-content) 70%, transparent);
+    margin: 0;
+  }
+
+  /* ---------- Footer (mirrors SiteFooter.astro) ---------- */
+  footer.site-footer {
+    border-top: var(--border) solid var(--color-base-300);
+    margin-top: 2rem;
+  }
+  .footer-inner {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 1.25rem 1rem;
+    font-size: 0.75rem;
+    color: color-mix(in oklch, var(--color-base-content) 50%, transparent);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .footer-inner a { text-decoration: underline; text-underline-offset: 2px; }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="brand">Domain<span>Pricing</span></a>
+    <a href="/" class="home-link">&larr; Back to pricing</a>
+  </div>
+</header>
+
+<main>
+  <h1>Free <span class="accent">WHOIS</span> Lookup</h1>
+  <p class="lede">
+    Check the registration date, expiration date, registrar, and nameservers
+    of any domain name. Data is fetched live from the public RDAP registry
+    network — no signup, no ads.
+  </p>
+
+  <div class="search-card">
+    <form class="whois-form" id="whois-form" autocomplete="off">
+      <div class="input-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          type="text"
+          id="domain-input"
+          name="domain"
+          placeholder="example.com"
+          aria-label="Domain name"
+          spellcheck="false"
+          inputmode="url"
+        />
+      </div>
+      <button type="submit" class="btn-primary" id="submit-btn">
+        <span class="spinner" aria-hidden="true"></span>
+        <span class="btn-label">Lookup</span>
+      </button>
+    </form>
+    <div class="example-chips" id="example-chips">
+      <span class="chip" data-domain="cloudflare.com">cloudflare.com</span>
+      <span class="chip" data-domain="wikipedia.org">wikipedia.org</span>
+      <span class="chip" data-domain="github.com">github.com</span>
+    </div>
+  </div>
+
+  <div id="result-area" aria-live="polite"></div>
+
+  <section class="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item">
+      <h3>What is WHOIS?</h3>
+      <p>WHOIS is a public protocol used to look up the registered owner, registrar, registration date, and expiration date of a domain name. This tool uses RDAP (the modern replacement for WHOIS) to fetch that data directly from the domain registry.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Why can't I see the owner's personal contact info?</h3>
+      <p>Since GDPR and most registrars' privacy policies took effect, personal registrant details (name, email, address) are redacted by default in public WHOIS/RDAP records. Only registrar, dates, status, and nameservers remain publicly visible for most domains.</p>
+    </div>
+    <div class="faq-item">
+      <h3>How do I check if a domain is available?</h3>
+      <p>Enter the domain above. If no registration record is found, the domain is very likely available for registration — compare prices across registrars on the DomainPricing homepage before buying.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>&copy; <span id="year"></span> DomainPricing. Data provided by public RDAP services.</span>
+    <a href="/">Compare domain prices &rarr;</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  var form = document.getElementById("whois-form");
+  var input = document.getElementById("domain-input");
+  var submitBtn = document.getElementById("submit-btn");
+  var resultArea = document.getElementById("result-area");
+  var chips = document.getElementById("example-chips");
+
+  var RDAP_BASE = "https://rdap.org/domain/";
+
+  /** Basic domain sanity check: letters/digits/hyphens, at least one dot, valid TLD length. */
+  function isValidDomain(value) {
+    var v = value.trim().toLowerCase();
+    var pattern = /^(?!-)[a-z0-9-]{1,63}(?<!-)(\.(?!-)[a-z0-9-]{1,63}(?<!-))+$/;
+    return pattern.test(v);
+  }
+
+  function normalizeDomain(raw) {
+    var v = raw.trim().toLowerCase();
+    v = v.replace(/^https?:\/\//, "");
+    v = v.replace(/^www\./, "");
+    v = v.split("/")[0];
+    v = v.split("?")[0];
+    return v;
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement("div");
+    div.textContent = str == null ? "" : String(str);
+    return div.innerHTML;
+  }
+
+  function formatDate(iso) {
+    if (!iso) return "&mdash;";
+    try {
+      var d = new Date(iso);
+      if (isNaN(d.getTime())) return escapeHtml(iso);
+      var opts = { year: "numeric", month: "short", day: "numeric" };
+      return d.toLocaleDateString("en-US", opts) + ' <span style="opacity:.5">(' + iso.slice(0, 10) + ')</span>';
+    } catch (e) {
+      return escapeHtml(iso);
+    }
+  }
+
+  function daysUntil(iso) {
+    if (!iso) return null;
+    var target = new Date(iso).getTime();
+    if (isNaN(target)) return null;
+    var diff = target - Date.now();
+    return Math.round(diff / 86400000);
+  }
+
+  function extractEventDate(events, action) {
+    if (!Array.isArray(events)) return null;
+    for (var i = 0; i < events.length; i++) {
+      if (events[i].eventAction === action) return events[i].eventDate;
+    }
+    return null;
+  }
+
+  function extractRegistrarName(entities) {
+    if (!Array.isArray(entities)) return null;
+    for (var i = 0; i < entities.length; i++) {
+      var e = entities[i];
+      if (Array.isArray(e.roles) && e.roles.indexOf("registrar") !== -1) {
+        if (Array.isArray(e.vcardArray) && e.vcardArray[1]) {
+          for (var j = 0; j < e.vcardArray[1].length; j++) {
+            var field = e.vcardArray[1][j];
+            if (field[0] === "fn") return field[3];
+          }
+        }
+        if (e.handle) return e.handle;
+      }
+    }
+    return null;
+  }
+
+  function extractNameservers(ns) {
+    if (!Array.isArray(ns)) return [];
+    return ns.map(function (n) { return n.ldhName; }).filter(Boolean);
+  }
+
+  function setLoading(isLoading) {
+    submitBtn.disabled = isLoading;
+    submitBtn.classList.toggle("loading", isLoading);
+  }
+
+  function renderSkeleton() {
+    resultArea.innerHTML =
+      '<div class="skeleton-card">' +
+        '<div class="skeleton-line" style="width:40%"></div>' +
+        '<div class="skeleton-line" style="width:70%"></div>' +
+        '<div class="skeleton-line" style="width:55%"></div>' +
+        '<div class="skeleton-line" style="width:60%; margin-bottom:0"></div>' +
+      "</div>";
+  }
+
+  function renderError(message) {
+    resultArea.innerHTML =
+      '<div class="state-card error">' +
+        '<span class="icon">' +
+          '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+            '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>' +
+          "</svg>" +
+        "</span>" +
+        '<div><strong>Lookup failed</strong>' + escapeHtml(message) + "</div>" +
+      "</div>";
+  }
+
+  function renderAvailable(domain) {
+    resultArea.innerHTML =
+      '<div class="state-card available">' +
+        '<span class="icon">' +
+          '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+            '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>' +
+          "</svg>" +
+        "</span>" +
+        '<div><strong>No registration record found</strong>' +
+          '<code class="font-mono">' + escapeHtml(domain) + "</code> is very likely available to register." +
+        "</div>" +
+      "</div>";
+  }
+
+  function renderResult(domain, data) {
+    var registrar = extractRegistrarName(data.entities) || "Unknown";
+    var created = extractEventDate(data.events, "registration");
+    var updated = extractEventDate(data.events, "last changed");
+    var expires = extractEventDate(data.events, "expiration");
+    var statuses = Array.isArray(data.status) ? data.status : [];
+    var nameservers = extractNameservers(data.nameservers);
+
+    var expiryDays = daysUntil(expires);
+    var expiryNote = "";
+    if (expiryDays !== null) {
+      if (expiryDays < 0) {
+        expiryNote = '<span style="color:var(--color-error); font-family: ui-sans-serif, system-ui;"> &middot; expired</span>';
+      } else if (expiryDays <= 30) {
+        expiryNote = '<span style="color:var(--color-warning); font-family: ui-sans-serif, system-ui;"> &middot; expires in ' + expiryDays + ' days</span>';
+      }
+    }
+
+    var nsHtml = nameservers.length
+      ? nameservers.map(function (n) { return escapeHtml(n.toLowerCase()); }).join("<br />")
+      : '<span style="opacity:.5; font-family: ui-sans-serif, system-ui;">No nameservers found</span>';
+
+    var statusHtml = statuses.length
+      ? statuses.map(function (s) { return escapeHtml(s); }).join(", ")
+      : "&mdash;";
+
+    var html =
+      '<div class="result-card">' +
+        '<div class="result-head">' +
+          '<span class="domain-name">' + escapeHtml(domain) + "</span>" +
+          '<span class="badge registered">Registered</span>' +
+        "</div>" +
+        '<table class="whois-table">' +
+          "<tbody>" +
+            "<tr><th>Registrar</th><td>" + escapeHtml(registrar) + "</td></tr>" +
+            "<tr><th>Registered on</th><td>" + formatDate(created) + "</td></tr>" +
+            "<tr><th>Last updated</th><td>" + formatDate(updated) + "</td></tr>" +
+            "<tr><th>Expires on</th><td>" + formatDate(expires) + expiryNote + "</td></tr>" +
+            "<tr><th>Domain status</th><td>" + statusHtml + "</td></tr>" +
+          "</tbody>" +
+        "</table>" +
+        '<div class="section-label">Nameservers</div>' +
+        '<table class="whois-table"><tbody><tr><td class="ns-list" colspan="2">' + nsHtml + "</td></tr></tbody></table>" +
+        '<details class="raw-json">' +
+          "<summary>View raw RDAP response</summary>" +
+          "<pre>" + escapeHtml(JSON.stringify(data, null, 2)) + "</pre>" +
+        "</details>" +
+      "</div>";
+
+    resultArea.innerHTML = html;
+  }
+
+  function performLookup(rawDomain) {
+    var domain = normalizeDomain(rawDomain);
+
+    if (!domain || !isValidDomain(domain)) {
+      renderError("Please enter a valid domain name, e.g. example.com");
+      return;
+    }
+
+    input.value = domain;
+    updateQueryString(domain);
+    document.title = domain + " — WHOIS Lookup | DomainPricing";
+
+    setLoading(true);
+    renderSkeleton();
+
+    fetch(RDAP_BASE + encodeURIComponent(domain), {
+      headers: { Accept: "application/rdap+json" },
+    })
+      .then(function (res) {
+        if (res.status === 404) {
+          renderAvailable(domain);
+          return null;
+        }
+        if (!res.ok) {
+          throw new Error("Registry returned status " + res.status);
+        }
+        return res.json();
+      })
+      .then(function (data) {
+        if (data) renderResult(domain, data);
+      })
+      .catch(function (err) {
+        renderError(
+          "Could not reach the RDAP registry (" + err.message + "). The domain's TLD may not have a public RDAP server, or you may be offline."
+        );
+      })
+      .finally(function () {
+        setLoading(false);
+      });
+  }
+
+  function updateQueryString(domain) {
+    var url = new URL(window.location.href);
+    url.searchParams.set("domain", domain);
+    window.history.replaceState({}, "", url);
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    performLookup(input.value);
+  });
+
+  chips.addEventListener("click", function (e) {
+    var target = e.target.closest(".chip");
+    if (!target) return;
+    var domain = target.getAttribute("data-domain");
+    input.value = domain;
+    performLookup(domain);
+  });
+
+  // Auto-run on load if ?domain=... is present
+  var params = new URLSearchParams(window.location.search);
+  var initialDomain = params.get("domain");
+  if (initialDomain) {
+    input.value = initialDomain;
+    performLookup(initialDomain);
+  } else {
+    input.focus();
+  }
+})();
+</script>
+</body>
+</html>
