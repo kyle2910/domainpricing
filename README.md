@@ -85,20 +85,7 @@ src/
 
 ## UI: Tailwind CSS + daisyUI
 
-Giao diện dùng [daisyUI](https://daisyui.com) với 2 theme mặc định `light`
-và `dark`. Theme được chọn tự động theo `prefers-color-scheme` của hệ điều
-hành thông qua cấu hình trong `src/styles/global.css`:
-
-```css
-@import "tailwindcss";
-@plugin "daisyui" {
-  themes: light --default, dark --prefersdark;
-}
-```
-
-Không có toggle chuyển theme thủ công trong UI. Muốn đổi theme, đổi tên theme
-trong dòng trên (danh sách theme có sẵn: https://daisyui.com/docs/themes/)
-hoặc thêm theme tùy biến theo tài liệu daisyUI.
+More infomation at [design-system.md](https://github.com/kyle2910/domainpricing/design-system.md)
 
 ## Ghi chú kỹ thuật
 
