@@ -127,9 +127,7 @@ csv/                          ← registrar pricing data, one CSV per registrar
 
 average.py                    ← regenerates csv/average.csv
 
-design-system.md              ← UI/style conventions (Vietnamese)
-design-system.en.md           ← UI/style conventions (English)
-whois.html                    ← standalone WHOIS lookup page, drop into public/
+design-system.md              ← UI/style conventions
 
 public/                       ← static assets served as-is
   favicon.ico, favicon.svg
