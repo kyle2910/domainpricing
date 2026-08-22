@@ -284,13 +284,8 @@
     border-color: color-mix(in oklch, var(--color-error) 40%, var(--color-base-300));
     background: color-mix(in oklch, var(--color-error) 8%, var(--color-base-100));
   }
-  .state-card.available {
-    border-color: color-mix(in oklch, var(--color-success) 40%, var(--color-base-300));
-    background: color-mix(in oklch, var(--color-success) 8%, var(--color-base-100));
-  }
   .state-card .icon { flex: none; margin-top: 0.1rem; }
   .state-card.error .icon { color: var(--color-error); }
-  .state-card.available .icon { color: var(--color-success); }
   .state-card strong { display: block; margin-bottom: 0.15rem; }
 
   /* ---------- Result card ---------- */
@@ -517,7 +512,7 @@
     </div>
     <div class="faq-item">
       <h3>How do I check if a domain is available?</h3>
-      <p>Enter the domain above. If no registration record is found, the domain is very likely available for registration — compare prices across registrars on the DomainPricing homepage before buying.</p>
+      <p>Enter the domain above. If no RDAP record is found, this tool will say so honestly rather than guess — it's a signal worth checking further with a registrar's own availability search, not a guarantee. Compare prices across registrars on the DomainPricing homepage before buying.</p>
     </div>
   </section>
 </main>
@@ -642,16 +637,16 @@
       "</div>";
   }
 
-  function renderAvailable(domain) {
+  function renderNotFound(domain) {
     resultArea.innerHTML =
-      '<div class="state-card available">' +
+      '<div class="state-card error">' +
         '<span class="icon">' +
           '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-            '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>' +
+            '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>' +
           "</svg>" +
         "</span>" +
-        '<div><strong>No registration record found</strong>' +
-          '<code class="font-mono">' + escapeHtml(domain) + "</code> is very likely available to register." +
+        '<div><strong>Sorry, no information found</strong>' +
+          'No RDAP record was returned for <code class="font-mono">' + escapeHtml(domain) + "</code>. This may mean the domain is unregistered, or that the registry for this TLD does not publish RDAP data — it is not a definitive availability check." +
         "</div>" +
       "</div>";
   }
@@ -728,7 +723,7 @@
     })
       .then(function (res) {
         if (res.status === 404) {
-          renderAvailable(domain);
+          renderNotFound(domain);
           return null;
         }
         if (!res.ok) {
