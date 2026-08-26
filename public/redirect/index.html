@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đang chuyển hướng...</title>
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #f7f7f8;
+    color: #222;
+  }
+  .box {
+    text-align: center;
+    padding: 24px;
+  }
+  .spinner {
+    width: 36px;
+    height: 36px;
+    border: 4px solid #ddd;
+    border-top-color: #4f46e5;
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  p { margin: 4px 0; font-size: 15px; color: #555; }
+  a { color: #4f46e5; }
+  .error { color: #c0392b; }
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="spinner" id="spinner"></div>
+  <p id="message">Đang chuyển hướng, vui lòng đợi...</p>
+</div>
+
+<script>
+(function () {
+  // Bản đồ nhà cung cấp -> hàm tạo URL tìm kiếm domain
+  var providerBuilders = {
+    "101domain.com": function (domain) {
+      return "https://www.101domain.com/availability_search?domain_name=" + encodeURIComponent(domain);
+    },
+    "cloudflare.com": function (domain) {
+      return "https://domains.cloudflare.com/?domain=" + encodeURIComponent(domain);
+    },
+    "dreamhost.com": function (domain) {
+      return "https://www.dreamhost.com/domains/?search=" + encodeURIComponent(domain);
+    },
+    "dynadot.com": function (domain) {
+      return "https://www.dynadot.com/domain/search?domain=" + encodeURIComponent(domain);
+    },
+    "gandi.net": function (domain) {
+      return "https://www.gandi.net/en/domain/suggest?query=" + encodeURIComponent(domain);
+    },
+    "godaddy.com": function (domain) {
+      return "https://www.godaddy.com/domainsearch/find?domainToCheck=" + encodeURIComponent(domain);
+    },
+    "hostinger.com": function (domain) {
+      return "https://www.hostinger.com/domain-name-search?domain=" + encodeURIComponent(domain);
+    },
+    "hover.com": function (domain) {
+      return "https://www.hover.com/domains/results?q=" + encodeURIComponent(domain);
+    },
+    "ionos.com": function (domain) {
+      return "https://www.ionos.com/domains/domain-check?q=" + encodeURIComponent(domain);
+    },
+    "name.com": function (domain) {
+      return "https://www.name.com/domain/search/" + encodeURIComponent(domain);
+    },
+    "namecheap.com": function (domain) {
+      return "https://www.namecheap.com/domains/registration/results/?domain=" + encodeURIComponent(domain);
+    },
+    "namesilo.com": function (domain) {
+      return "https://www.namesilo.com/domain/search-domains?query=" + encodeURIComponent(domain);
+    },
+    "porkbun.com": function (domain) {
+      return "https://porkbun.com/checkout/search?q=" + encodeURIComponent(domain);
+    },
+    "sav.com": function (domain) {
+      return "https://www.sav.com/domains/search?q=" + encodeURIComponent(domain);
+    },
+    "spaceship.com": function (domain) {
+      return "https://www.spaceship.com/domain-search/?query=" + encodeURIComponent(domain);
+    },
+    "squarespace.com": function (domain) {
+      return "https://domains.squarespace.com/search?query=" + encodeURIComponent(domain);
+    }
+  };
+
+  function getQueryParam(name) {
+    var params = new URLSearchParams(window.location.search);
+    return params.get(name);
+  }
+
+  function showError(msg) {
+    var spinner = document.getElementById("spinner");
+    var message = document.getElementById("message");
+    if (spinner) spinner.style.display = "none";
+    if (message) {
+      message.classList.add("error");
+      message.innerHTML = msg;
+    }
+  }
+
+  var provider = getQueryParam("provider");
+  var domain = getQueryParam("domain");
+
+  if (!provider || !domain) {
+    showError("Missing parameter in the URL");
+  } else {
+    var normalizedProvider = provider.toLowerCase().trim();
+    var buildUrl = providerBuilders[normalizedProvider];
+
+    if (!buildUrl) {
+      showError("Domain name provider not supported: <strong>" + provider + "</strong>");
+    } else {
+      var targetUrl = buildUrl(domain);
+      window.location.replace(targetUrl);
+    }
+  }
+})();
+</script>
+</body>
+</html>

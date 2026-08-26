@@ -18,6 +18,7 @@
  * Matching ignores a trailing slash and is case-insensitive.
  */
 export const SITEMAP_BLACKLIST: string[] = [
+  "/redirect"
   // "/internal",
   // "/legal/draft-*",
 ];
