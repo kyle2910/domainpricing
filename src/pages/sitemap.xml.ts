@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import fs from "node:fs";
 import path from "node:path";
 import { getAllRegistrars } from "../lib/registrars";
+import { isBlacklisted } from "../lib/sitemap-blacklist";
 
 const PUBLIC_DIR = path.resolve(process.cwd(), "public");
 
@@ -51,12 +52,12 @@ export const GET: APIRoute = ({ site }) => {
   const staticHtmlPages = findStaticHtmlPages().sort();
 
   const urls = [
-    { loc: `${base}/`, priority: "1.0" },
+    { path: "/", loc: `${base}/`, priority: "1.0" },
     ...registrars
       .filter((r) => r.id !== "average")
-      .map((r) => ({ loc: `${base}/${r.slug}`, priority: "0.8" })),
-    ...staticHtmlPages.map((p) => ({ loc: `${base}${p}`, priority: "0.5" })),
-  ];
+      .map((r) => ({ path: `/${r.slug}`, loc: `${base}/${r.slug}`, priority: "0.8" })),
+    ...staticHtmlPages.map((p) => ({ path: p, loc: `${base}${p}`, priority: "0.5" })),
+  ].filter((u) => !isBlacklisted(u.path));
 
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
